@@ -78,7 +78,7 @@ class actor_critic(nn.Module):
     def compute_target(self, obs, gamma, rewards, done):
         # compute r + gamma * (1 - d) * Q(s', mu_targ(s'))
         pi = self.act_limit * self.policy_targ(obs)
-        return (rewards + gamma * (1-done) * self.q_targ(torch.cat([obs, pi], -1))).detach()
+        return (rewards + gamma * (1-done) * self.q_targ(torch.cat([obs, pi], -1)).squeeze()).detach()
 
     def q_function(self, obs, detach=True, action=None):
         # compute Q(s, a) or Q(s, mu(s))
