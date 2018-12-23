@@ -97,7 +97,7 @@ def ddpg(env_name, actor_critic_function, hidden_size,
                 # compute r + gamma * (1 - d) * Q(s', mu_targ(s'))
                 q_targ = actor_critic.compute_target(obs2_tens, gamma, rews_tens, done_tens)
                 # compute (Q(s, a) - y(r, s', d))^2
-                q_loss = (q-q_targ).pow(2).mean()
+                q_loss = (q.squeeze()-q_targ).pow(2).mean()
 
                 q_optimizer.zero_grad()
                 q_loss.backward()
