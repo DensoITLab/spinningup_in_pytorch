@@ -146,7 +146,6 @@ def td3(env_name, actor_critic_function, hidden_size,
 
 if __name__ == '__main__':
     import argparse
-    import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('--env', type=str, default='Pendulum-v0')
     parser.add_argument('--hid', type=int, default=300)
