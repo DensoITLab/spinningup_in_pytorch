@@ -53,7 +53,7 @@ def td3(env_name, actor_critic_function, hidden_size,
 
     replay_buffer = ReplayBuffer(replay_size)
 
-    env, test_env = gym.make(env_name), gym.make(env_name)
+    env = gym.make(env_name)
 
     obs_dim = env.observation_space.shape[0]
     act_dim = env.action_space.shape[0]
@@ -62,8 +62,7 @@ def td3(env_name, actor_critic_function, hidden_size,
 
     actor_critic = actor_critic_function(act_dim, obs_dim, hidden_size, act_limit)
 
-    q1_optimizer = optim.Adam(actor_critic.q1.parameters(), q_lr)
-    q2_optimizer = optim.Adam(actor_critic.q2.parameters(), q_lr)
+    q_optimizer = optim.Adam([{"params":actor_critic.q1.parameters()}, {"params":actor_critic.q2.parameters()}], q_lr)
     policy_optimizer = optim.Adam(actor_critic.policy.parameters(), pi_lr)
 
     start_time = time.time()
@@ -102,11 +101,9 @@ def td3(env_name, actor_critic_function, hidden_size,
                 # compute (Q(s, a) - y(r, s', d))^2
                 q_loss = (q1-q_targ).pow(2).mean() + (q2-q_targ).pow(2).mean()
 
-                q1_optimizer.zero_grad()
-                q2_optimizer.zero_grad()
+                q_optimizer.zero_grad()
                 q_loss.backward()
-                q1_optimizer.step()
-                q2_optimizer.step()
+                q_optimizer.step()
 
                 logger.store(LossQ=q_loss.item(), Q1Vals=q1.detach().numpy(), Q2Vals=q2.detach().numpy())
 
